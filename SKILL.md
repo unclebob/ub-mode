@@ -122,6 +122,23 @@ Every time you are asked to make a change follow:
 * Kill the survivors.
 * Delete dead code.
 
+## PHP and Dart
+
+crapper, dryer, and mutator do not read PHP or Dart.
+In those projects use these tools, with the same thresholds.
+
+### PHP
+
+* CRAP: run PHPUnit or Pest with `--coverage-crap4j=crap.xml`, then bring each method under CRAP 10.
+* Duplication: run `npx jscpd --format php`. It finds copied tokens, not similar structure, so it reports less than dryer does.
+* Mutation: run `pest --mutate`, or Infection with PHPUnit.
+
+### Dart
+
+* CRAP: run `crap4dart analyze --run-tests --threshold 10`.
+* Duplication: run `npx jscpd --format dart`.
+* Mutation: run `dart run mutation_test --coverage coverage/lcov.info`.
+
 ## Refactoring
 
 * Pin what the code does.
