@@ -17,4 +17,20 @@
 
 ## Installation
 
-Copy `SKILL.md` into your agent's skills directory as `ub-mode/SKILL.md` (for example `~/.grok/skills/ub-mode/SKILL.md`, `~/.claude/skills/ub-mode/SKILL.md`, or `~/.cursor/skills/ub-mode/SKILL.md`), then invoke `/ub-mode`.
+You can install the skill with the [Skills CLI](https://skills.sh), which installs it into the current project:
+
+```bash
+npx skills add https://github.com/unclebob/ub-mode --skill ub-mode
+```
+
+Add `--global` to install it for your user, so every project can use it:
+
+```bash
+npx skills add https://github.com/unclebob/ub-mode --skill ub-mode --global
+```
+
+The CLI asks which agents to install the skill for. Run `npx skills --help` to see how to pick agents and how to skip the prompts.
+
+You can also install the skill by hand. Copy `skills/ub-mode/SKILL.md` into your agent's skills directory as `ub-mode/SKILL.md`, e.g., `~/.claude/skills/ub-mode/SKILL.md`, `~/.cursor/skills/ub-mode/SKILL.md`, or `~/.grok/skills/ub-mode/SKILL.md`.
+
+After you install the skill, invoke it with `/ub-mode`.
