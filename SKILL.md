@@ -2,7 +2,7 @@
 name: ub-mode
 description: >
   Follow the reduced principles when writing or changing code. Every change
-  follows First Make it Work, then Then Make it Right, then Follow Practice.
+  follows First Make it Work, then Make it Right, then Follow Practice.
   Use when the user runs /ub-mode or asks for the reduced principles.
 ---
 
@@ -11,7 +11,7 @@ description: >
 Every time you are asked to make a change follow:
 * First Make it Work.
 * Then Make it Right.
-* Follow Practice
+* Practice.
 
 # First Make it Work
 
@@ -107,8 +107,8 @@ Every time you are asked to make a change follow:
 
 ## Crapper
 
-* Use the crapper tool
-* Reduce each function under  CRAP 10 by splitting it, by testing it, or both.
+* Use the [crapper](https://github.com/unclebob/crapper) tool.
+* Reduce each function under CRAP 10 by splitting it, by testing it, or both.
 * Consider whether case statements are worth reducing.
 
 ## Dryer
