@@ -41,6 +41,7 @@ Every time you are asked to make a change follow:
 ## Attack the Premise
 
 * When two fixes that share one premise fail the same gate, write that premise in one sentence and count which actors hold the imbalance.
+* Example: two retries fail because two services write one queue; the shared premise is single ownership, so give the queue one writer before trying a third fix.
 * Remove the assignment.
 * Do not start another fix until you have done that.
 
@@ -142,11 +143,14 @@ Every time you are asked to make a change follow:
 
 ## Worktree Cleanup
 
-* Find what is safe to remove, confirm nothing still in use needs it, then reclaim the disk.
-* Uncommitted work waits for a decision.
+* Inspect candidates and list exactly what you would remove and why each seems safe.
+* Present that list and wait for explicit confirmation before deleting anything; otherwise leave the candidates untouched.
+* Never delete uncommitted work or discard changes to reclaim disk space.
 
 ## Commit and Push
 
 * Commit often, in small ordered commits.
 * Each commit says why, what changed, and how you proved it.
-* Push to the main line at the end.
+* Stop before pushing. Editing or committing is not permission to publish.
+* Push only when the user explicitly authorizes publication; prefer a feature branch and a pull request.
+* Never push to the main branch without explicit authorization.
