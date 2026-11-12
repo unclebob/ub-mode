@@ -32,6 +32,9 @@ Every time you are asked to make a change follow:
 * See it fail for the reason you expect.
 * Make the smallest change that makes it pass.
 * If an honest test is impractical, do not write a bad one.
+* When an autonomous agent iterates against your tests, keep a hidden
+  held-out copy it never sees; to a search loop, a visible test is a
+  training set.
 
 ## Redesign From First Principles
 
@@ -110,6 +113,8 @@ Every time you are asked to make a change follow:
 * Use the crapper tool
 * Reduce each function under  CRAP 10 by splitting it, by testing it, or both.
 * Consider whether case statements are worth reducing.
+* Gate agent test generation: no agent-written tests on a module with CRAP
+  over 30. Coverage on bad soil lies.
 
 ## Dryer
 
