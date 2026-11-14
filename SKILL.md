@@ -1,9 +1,11 @@
 ---
 name: ub-mode
 description: >
-  Follow the reduced principles when writing or changing code. Every change
-  follows First Make it Work, then Then Make it Right, then Follow Practice.
-  Use when the user runs /ub-mode or asks for the reduced principles.
+  Follow the reduced principles when writing or changing code: make it work
+  first, then refactor it clean, then apply standard practice (First Make it
+  Work, then Make it Right, then Follow Practice). Use when the user runs
+  /ub-mode, asks for the reduced principles, or asks to clean up or refactor
+  code properly.
 ---
 
 # ub-mode
