@@ -130,7 +130,7 @@ Every time you are asked to make a change follow:
 
 # Running the tools
 
-The gate tools are vendored in this repo under `tools/` (clone `github.com/AlexanderStone/ub-mode`). Run each from the root of the project you are measuring; the first run builds a local `.venv`. Set `UB=<path to ub-mode checkout>`.
+The gate tools are vendored under `tools/` in `github.com/AlexanderStone/ub-mode`. If no checkout exists, `git clone https://github.com/AlexanderStone/ub-mode ~/ub-mode`. Run each from the root of the project you are measuring; the first run builds a local `.venv`. Set `UB=<path to ub-mode checkout>`.
 
 * `$UB/tools/crapper/crapper [--no-coverage] [paths]` writes `.metrics/crap.edn`. Handles Clojure, Java, Go, TypeScript, JavaScript (`.js .mjs .cjs`), Rust, Python. Use `--no-coverage` when the project has no test runner: complexity only, CRAP is N/A.
 * `$UB/tools/dryer/dryer [paths]` writes `.metrics/dry.edn`. It does not read `.js/.mjs/.cjs`, only the other crapper languages.
