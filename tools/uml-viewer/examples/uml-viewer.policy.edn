@@ -1,0 +1,39 @@
+{:title "UML viewer"
+ :src "src"
+ :prefix "uml-viewer"
+ :lang :clojure
+ :out "examples/uml-viewer.edn"
+ :hierarchical true
+ :foreign [quil javax.swing]
+ :order [main adapters application engine source graph
+         clojure-language typescript-language rust-language python-language go-language domain]
+ :levels [[domain source graph clojure-language typescript-language rust-language python-language
+           go-language]
+          [engine]
+          [application]
+          [adapters]
+          [main]]
+ :edge-kinds {[:engine.compose :engine.layout] :association
+              [:engine.compose :engine.route] :association
+              [:adapters.core :adapters.sketch] :association
+              [:application.document :engine.compose] :association
+              [:application.document :domain.hierarchy] :association
+              [:main :adapters] :association
+              [:main :clojure-language] :association
+              [:main :typescript-language] :association
+              [:main :rust-language] :association
+              [:main :python-language] :association
+              [:main :go-language] :association
+              [:main :application] :association
+              [:main.uml-viewer :adapters.core] :association
+              [:main.uml-viewer :clojure-language.source-clojure] :association
+              [:main.uml-viewer :typescript-language.source-typescript] :association
+              [:main.uml-viewer :rust-language.source-rust] :association
+              [:main.uml-viewer :python-language.source-python] :association
+              [:main.uml-viewer :go-language.source-go] :association
+              [:main.ir-generator :application.ir-generator] :association
+              [:main.ir-generator :clojure-language.graph-clojure] :association
+              [:main.ir-generator :typescript-language.graph-typescript] :association
+              [:main.ir-generator :rust-language.graph-rust] :association
+              [:main.ir-generator :python-language.graph-python] :association
+              [:main.ir-generator :go-language.graph-go] :association}}

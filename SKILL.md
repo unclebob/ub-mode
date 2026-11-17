@@ -128,6 +128,17 @@ Every time you are asked to make a change follow:
 * Change the structure.
 * Prove the behavior did not change.
 
+# Running the tools
+
+The gate tools are vendored in this repo under `tools/` (clone `github.com/AlexanderStone/ub-mode`). Run each from the root of the project you are measuring; the first run builds a local `.venv`. Set `UB=<path to ub-mode checkout>`.
+
+* `$UB/tools/crapper/crapper [--no-coverage] [paths]` writes `.metrics/crap.edn`. Handles Clojure, Java, Go, TypeScript, JavaScript (`.js .mjs .cjs`), Rust, Python. Use `--no-coverage` when the project has no test runner: complexity only, CRAP is N/A.
+* `$UB/tools/dryer/dryer [paths]` writes `.metrics/dry.edn`. It does not read `.js/.mjs/.cjs`, only the other crapper languages.
+* `$UB/tools/mutator/mutator [--scan] [paths]` needs a working test command; `--scan` lists sites without running tests.
+* `$UB/tools/uml-viewer` is a desktop GUI (Clojure/Quil). It cannot run in a cloud session; read `.metrics/*.edn` instead.
+
+Delete `.metrics/` and `target/` before committing unless the project tracks them.
+
 # Practice
 
 ## Keep a Log

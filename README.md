@@ -15,6 +15,10 @@
 - [unclebob/mutator](https://github.com/unclebob/mutator) — Runs mutation testing to expose uncovered code and surviving mutants that tests fail to catch.
 - [unclebob/uml-viewer](https://github.com/unclebob/uml-viewer) — Visualizes components, coverage, CRAP, mutation scores, and dependency directions.
 
+## Bundled tools
+
+The four companion tools are vendored under `tools/` (see `tools/VENDORED.md` for upstream commits), so this one repo is enough. crapper, dryer and mutator run on Linux and in a Claude cloud session (Python 3.11+; no Clojure needed). uml-viewer needs a desktop display.
+
 ## Installation
 
 Copy `SKILL.md` into your agent's skills directory as `ub-mode/SKILL.md` (for example `~/.grok/skills/ub-mode/SKILL.md`, `~/.claude/skills/ub-mode/SKILL.md`, or `~/.cursor/skills/ub-mode/SKILL.md`), then invoke `/ub-mode`.

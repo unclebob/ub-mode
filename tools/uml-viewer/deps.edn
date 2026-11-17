@@ -1,0 +1,38 @@
+{:paths ["src"]
+ :deps {org.clojure/clojure {:mvn/version "1.12.0"}}
+ :aliases
+ {:spec {:extra-paths ["spec"]
+         :extra-deps {speclj/speclj {:mvn/version "3.12.2"}
+                      quil/quil {:mvn/version "4.3.1563"}}
+         ;; macOS activates a JVM that touches AWT and takes the keyboard
+         ;; and mouse. Specs build Swing components, so stay in the background.
+         :jvm-opts ["-Dapple.awt.UIElement=true"]
+         :main-opts ["-m" "speclj.main" "-c"]}
+  :cov {:extra-paths ["spec"]
+        :extra-deps {cloverage/cloverage {:mvn/version "1.2.4"}
+                     speclj/speclj {:mvn/version "3.12.2"}
+                     quil/quil {:mvn/version "4.3.1563"}}
+        :jvm-opts ["-Dapple.awt.UIElement=true"]
+        :main-opts ["-m" "speclj.cloverage"
+                    "-c" "--tag" "~no-mutate" "spec"
+                    "--" "-p" "src" "-s" "spec" "--lcov"]}
+  :crap {:extra-deps {io.github.unclebob/crap4clj
+                      {:local/root "../clojure/crap4clj"}}
+         :main-opts ["-m" "crap4clj.core"]}
+  :mutate {:extra-paths ["spec"]
+           :extra-deps {io.github.unclebob/clj-mutate
+                        {:git/url "https://github.com/unclebob/clj-mutate.git"
+                         :git/sha "c8c0eedf34dafec270e13e74a106ff1703578d28"}
+                        org.clojure/tools.reader {:mvn/version "1.4.2"}
+                        speclj/speclj {:mvn/version "3.12.2"}
+                        quil/quil {:mvn/version "4.3.1563"}}
+           :jvm-opts ["-Dapple.awt.UIElement=true"]
+           :main-opts ["-m" "clj-mutate.core"]}
+  :ir {:main-opts ["-m" "uml-viewer.main.ir-generator"]}
+  :run {:extra-deps {quil/quil {:mvn/version "4.3.1563"}}
+        :main-opts ["-m" "uml-viewer.main.uml-viewer"]}
+  :uml-viewer {:extra-deps {quil/quil {:mvn/version "4.3.1563"}}
+               :main-opts ["-m" "uml-viewer.main.uml-viewer"]}
+  :uml-viewer-restart {:extra-deps {quil/quil {:mvn/version "4.3.1563"}}
+                       :main-opts ["-m" "uml-viewer.main.uml-viewer"
+                                   "--restart" "examples/uml-viewer.edn"]}}}

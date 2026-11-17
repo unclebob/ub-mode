@@ -1,0 +1,72 @@
+#!/bin/zsh
+# Loader for this project. Points at the local uml-viewer checkout so the
+# Python scanner is on the classpath.
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+cd "$ROOT"
+
+if [[ -n "${UML_VIEWER_ROOT:-}" ]]; then
+  VIEWER="$UML_VIEWER_ROOT"
+else
+  VIEWER="$ROOT/../uml-viewer"
+fi
+if [[ ! -d "$VIEWER" ]]; then
+  echo "uml-viewer checkout not found at $VIEWER" >&2
+  echo "Set UML_VIEWER_ROOT to the checkout." >&2
+  exit 1
+fi
+VIEWER="$(cd "$VIEWER" && pwd)"
+DEPS="{:deps {uml-viewer/uml-viewer {:local/root \"$VIEWER\"} quil/quil {:mvn/version \"4.3.1563\"}}}"
+
+edn_path() {
+  local name base f
+  name="$(basename "$ROOT")"
+  if [[ -f "examples/${name}.edn" ]]; then
+    echo "examples/${name}.edn"
+    return
+  fi
+  if [[ -d examples ]]; then
+    for f in examples/*.edn(N); do
+      [[ -f "$f" ]] || continue
+      base="${f:t}"
+      [[ "$base" == *.policy.edn ]] && continue
+      echo "$f"
+      return
+    done
+  fi
+}
+
+LOG="uml-viewer-log.txt"
+
+launch_viewer() {
+  {
+    printf '----- %s starting uml-viewer' "$(date '+%Y-%m-%d %H:%M:%S')"
+    [[ $# -gt 0 ]] && printf ' %s' "$@"
+    printf '\n'
+  } >> "$LOG"
+  # `clj` is rlwrap on Homebrew; a background rlwrap stops (SIGTTOU) and
+  # never starts the JVM. `clojure` is the same CLI without the tty wrapper.
+  nohup clojure -Sdeps "$DEPS" -M -m uml-viewer.main.uml-viewer "$@" >> "$LOG" 2>&1 </dev/null &
+  disown
+  echo "UML viewer started (pid $!). Log: $LOG"
+}
+
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+  echo "usage: ./uml [--restart]" >&2
+  echo "  (no args)   fresh window; companion writes the diagram" >&2
+  echo "  --restart   new JVM, same companion; restores last view" >&2
+  echo "  The viewer detaches; exceptions go to $LOG." >&2
+  exit 0
+fi
+
+if [[ "${1:-}" == "--restart" ]]; then
+  edn="$(edn_path)"
+  if [[ -n "$edn" ]]; then
+    launch_viewer --restart "$edn"
+  else
+    launch_viewer --restart
+  fi
+  exit 0
+fi
+
+launch_viewer "$@"

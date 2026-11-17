@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.egg-info/
+.metrics/
+target/
+dist/
+build/
+uml-viewer-log.txt

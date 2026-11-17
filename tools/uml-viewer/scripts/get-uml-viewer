@@ -1,0 +1,139 @@
+#!/bin/zsh
+# Fetch uml-viewer into this project and start it.
+# Install: curl -fsSL https://raw.githubusercontent.com/unclebob/uml-viewer/master/scripts/get-uml-viewer -o get-uml-viewer
+#          chmod +x get-uml-viewer && ./get-uml-viewer
+set -euo pipefail
+
+repo_url="${UML_VIEWER_REPO_URL:-https://github.com/unclebob/uml-viewer.git}"
+ref="${UML_VIEWER_REF:-master}"
+tool_dir=".uml-viewer/uml-viewer"
+quil_ver="4.3.1563"
+
+usage() {
+  echo "usage: get-uml-viewer [--install-only]" >&2
+  echo "  Run from the project you want to view. Clones uml-viewer into" >&2
+  echo "  gitignored ${tool_dir}/, writes ./uml, then starts the viewer." >&2
+}
+
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+  usage
+  exit 0
+fi
+
+install_only=0
+if [[ "${1:-}" == "--install-only" ]]; then
+  install_only=1
+elif [[ $# -gt 0 ]]; then
+  usage
+  exit 1
+fi
+
+if ! command -v git >/dev/null; then
+  echo "get-uml-viewer: git is required" >&2
+  exit 1
+fi
+
+ensure_gitignore() {
+  local file=".gitignore"
+  local begin="# BEGIN UML-VIEWER"
+  local end="# END UML-VIEWER"
+  local tmp_file
+  tmp_file="$(mktemp)"
+  touch "$file"
+  awk -v begin="$begin" -v end="$end" '
+    $0 == begin { inside=1; next }
+    $0 == end { inside=0; next }
+    !inside { print }
+  ' "$file" > "$tmp_file"
+  [[ ! -s "$tmp_file" ]] || printf '\n' >> "$tmp_file"
+  printf '%s\n' "$begin" ".uml-viewer/" "uml-viewer-log.txt" "$end" >> "$tmp_file"
+  mv "$tmp_file" "$file"
+}
+
+fetch_tool() {
+  mkdir -p .uml-viewer
+  if [[ -d "$tool_dir/.git" ]]; then
+    git -C "$tool_dir" fetch --depth 1 origin "$ref"
+    git -C "$tool_dir" checkout -q FETCH_HEAD
+  else
+    rm -rf "$tool_dir"
+    git clone --depth 1 --branch "$ref" "$repo_url" "$tool_dir"
+  fi
+}
+
+write_uml() {
+  local abs deps
+  abs="$(cd "$tool_dir" && pwd)"
+  deps="{:deps {uml-viewer/uml-viewer {:local/root \"$abs\"} quil/quil {:mvn/version \"$quil_ver\"}}}"
+  cat > ./uml <<EOF
+#!/bin/zsh
+set -euo pipefail
+ROOT="\$(cd "\$(dirname "\$0")" && pwd)"
+cd "\$ROOT"
+DEPS='$deps'
+
+edn_path() {
+  local name base f
+  name="\$(basename "\$ROOT")"
+  if [[ -f "examples/\${name}.edn" ]]; then
+    echo "examples/\${name}.edn"
+    return
+  fi
+  if [[ -d examples ]]; then
+    for f in examples/*.edn(N); do
+      [[ -f "\$f" ]] || continue
+      base="\${f:t}"
+      [[ "\$base" == *.policy.edn ]] && continue
+      echo "\$f"
+      return
+    done
+  fi
+}
+
+LOG="uml-viewer-log.txt"
+
+launch_viewer() {
+  {
+    printf '----- %s starting uml-viewer' "\$(date '+%Y-%m-%d %H:%M:%S')"
+    [[ \$# -gt 0 ]] && printf ' %s' "\$@"
+    printf '\\n'
+  } >> "\$LOG"
+  nohup clojure -Sdeps "\$DEPS" -M -m uml-viewer.main.uml-viewer "\$@" >> "\$LOG" 2>&1 </dev/null &
+  disown
+  echo "UML viewer started (pid \$!). Log: \$LOG"
+}
+
+if [[ "\${1:-}" == "-h" || "\${1:-}" == "--help" ]]; then
+  echo "usage: ./uml [--restart]" >&2
+  echo "  (no args)   fresh window; companion writes the diagram" >&2
+  echo "  --restart   new JVM, same companion; restores last view" >&2
+  echo "  The viewer detaches; exceptions go to \$LOG." >&2
+  exit 0
+fi
+
+if [[ "\${1:-}" == "--restart" ]]; then
+  edn="\$(edn_path)"
+  if [[ -n "\$edn" ]]; then
+    launch_viewer --restart "\$edn"
+  else
+    launch_viewer --restart
+  fi
+  exit 0
+fi
+
+launch_viewer "\$@"
+EOF
+  chmod +x ./uml
+}
+
+ensure_gitignore
+fetch_tool
+write_uml
+
+echo "Installed ./uml (uml-viewer in $tool_dir)."
+if [[ "$install_only" -eq 1 ]]; then
+  echo "Run ./uml to start the viewer."
+  exit 0
+fi
+
+exec ./uml

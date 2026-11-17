@@ -1,0 +1,9 @@
+#!/bin/sh
+# Run the CRAP tool, creating a local virtualenv on first use.
+ROOT=$(CDPATH= cd -- "$(dirname "$0")" && pwd)
+PY="$ROOT/.venv/bin/python"
+if [ ! -x "$PY" ]; then
+  python3 -m venv "$ROOT/.venv"
+  "$ROOT/.venv/bin/pip" install -e "$ROOT"
+fi
+exec "$PY" -m crapper "$@"
