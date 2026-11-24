@@ -19,6 +19,7 @@ Every time you are asked to make a change follow:
 
 * One decision lives in one place.
 * Ship the smallest edit that solves the problem.
+* If the smallest edit duplicates state or breaks Boundary Discipline, stop and Redesign From First Principles.
 
 ## Foundational Thinking
 
@@ -107,19 +108,19 @@ Every time you are asked to make a change follow:
 
 ## Crapper
 
-* Use the crapper tool
-* Reduce each function under  CRAP 10 by splitting it, by testing it, or both.
+* Use the crapper tool (if unavailable on `$PATH`, fall back to language-native complexity and coverage tools).
+* Reduce each function under CRAP 10 by splitting it, by testing it, or both.
 * Consider whether case statements are worth reducing.
 
 ## Dryer
 
-* Use the dryer tool to eliminate duplication that rank 0.8 or above.
+* Use the dryer tool (if unavailable on `$PATH`, fall back to a language-native clone detector) to eliminate duplication that ranks 0.8 or above.
 
 ## Mutator
 
-* Use the mutator tool
-* Cover the uncovered.
-* Kill the survivors.
+* Use the mutator tool (if unavailable on `$PATH`, fall back to language-native mutation testing).
+* Cover the uncovered, except paths explicitly exempted under TDD impracticality.
+* Kill non-equivalent survivors; cap remediation at 3 passes per module and note verified equivalent mutants instead of looping.
 * Delete dead code.
 
 ## Refactoring
@@ -132,21 +133,21 @@ Every time you are asked to make a change follow:
 
 ## Keep a Log
 
-* Keep a log of every action you take and the reason you took it.
-* Report that log upon completion.
+* Write every action and its reason to an external gitignored log file (such as `.ub-mode.log`), not the main thread.
+* Report a concise summary of that log upon completion.
 
 ## Guard the Context Window
 
 * Keep the main thread small.
-* Send the bulk elsewhere, and keep the summary.
+* Send the bulk (including tool output and action logs) elsewhere, and keep the summary.
 
 ## Worktree Cleanup
 
-* Find what is safe to remove, confirm nothing still in use needs it, then reclaim the disk.
+* List candidate files first and confirm nothing still in use—and no untracked secrets or `.env` files—will be lost before reclaiming disk.
 * Uncommitted work waits for a decision.
 
 ## Commit and Push
 
 * Commit often, in small ordered commits.
 * Each commit says why, what changed, and how you proved it.
-* Push to the main line at the end.
+* Push to the working branch at the end; push directly to the main line only when explicitly authorized.
